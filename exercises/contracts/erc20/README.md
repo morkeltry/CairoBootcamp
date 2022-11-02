@@ -6,8 +6,6 @@ Several features need to be added to improve existing functionality.
 
 Tests will run against any implementations.
 
-To run the test file, invoke:
-
 You should modify **ONLY** the file `erc20.cairo` in `exercises/contracts/`.
 
 If a feature is complete, run again to see the test output:
