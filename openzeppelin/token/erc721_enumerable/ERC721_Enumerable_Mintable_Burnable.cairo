@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts for Cairo v0.2.1 (token/erc721/ERC721_Mintable_Burnable.cairo)
+// OpenZeppelin Contracts for Cairo v0.2.1 (token/erc721_enumerable/ERC721_Enumerable_Mintable_Burnable.cairo)
 
 %lang starknet
+
 from starkware.cairo.common.cairo_builtins import HashBuiltin
-from starkware.cairo.common.uint256 import Uint256, uint256_add, uint256_signed_le
+from starkware.cairo.common.uint256 import Uint256
+
 from openzeppelin.access.ownable import Ownable
 from openzeppelin.introspection.ERC165 import ERC165
 from openzeppelin.token.erc721.library import ERC721
+from openzeppelin.token.erc721_enumerable.library import ERC721_Enumerable
 
 //
 // Constructor
@@ -17,6 +20,7 @@ func constructor{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
     name: felt, symbol: felt, owner: felt
 ) {
     ERC721.initializer(name, symbol);
+    ERC721_Enumerable.initializer();
     Ownable.initializer(owner);
     return ();
 }
@@ -24,6 +28,30 @@ func constructor{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
 //
 // Getters
 //
+
+@view
+func totalSupply{pedersen_ptr: HashBuiltin*, syscall_ptr: felt*, range_check_ptr}() -> (
+    totalSupply: Uint256
+) {
+    let (totalSupply: Uint256) = ERC721_Enumerable.total_supply();
+    return (totalSupply,);
+}
+
+@view
+func tokenByIndex{pedersen_ptr: HashBuiltin*, syscall_ptr: felt*, range_check_ptr}(
+    index: Uint256
+) -> (tokenId: Uint256) {
+    let (tokenId: Uint256) = ERC721_Enumerable.token_by_index(index);
+    return (tokenId,);
+}
+
+@view
+func tokenOfOwnerByIndex{pedersen_ptr: HashBuiltin*, syscall_ptr: felt*, range_check_ptr}(
+    owner: felt, index: Uint256
+) -> (tokenId: Uint256) {
+    let (tokenId: Uint256) = ERC721_Enumerable.token_of_owner_by_index(owner, index);
+    return (tokenId,);
+}
 
 @view
 func supportsInterface{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
@@ -115,7 +143,7 @@ func setApprovalForAll{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_che
 func transferFrom{pedersen_ptr: HashBuiltin*, syscall_ptr: felt*, range_check_ptr}(
     from_: felt, to: felt, tokenId: Uint256
 ) {
-    ERC721.transfer_from(from_, to, tokenId);
+    ERC721_Enumerable.transfer_from(from_, to, tokenId);
     return ();
 }
 
@@ -123,22 +151,23 @@ func transferFrom{pedersen_ptr: HashBuiltin*, syscall_ptr: felt*, range_check_pt
 func safeTransferFrom{pedersen_ptr: HashBuiltin*, syscall_ptr: felt*, range_check_ptr}(
     from_: felt, to: felt, tokenId: Uint256, data_len: felt, data: felt*
 ) {
-    ERC721.safe_transfer_from(from_, to, tokenId, data_len, data);
+    ERC721_Enumerable.safe_transfer_from(from_, to, tokenId, data_len, data);
     return ();
 }
 
 @external
-func mint{pedersen_ptr: HashBuiltin*, syscall_ptr: felt*, range_check_ptr}(to: felt, new_token_id: Uint256) {
+func mint{pedersen_ptr: HashBuiltin*, syscall_ptr: felt*, range_check_ptr}(
+    to: felt, tokenId: Uint256
+) {
     Ownable.assert_only_owner();
-
-    ERC721._mint(to, new_token_id);
+    ERC721_Enumerable._mint(to, tokenId);
     return ();
 }
 
 @external
 func burn{pedersen_ptr: HashBuiltin*, syscall_ptr: felt*, range_check_ptr}(tokenId: Uint256) {
     ERC721.assert_only_token_owner(tokenId);
-    ERC721._burn(tokenId);
+    ERC721_Enumerable._burn(tokenId);
     return ();
 }
 
