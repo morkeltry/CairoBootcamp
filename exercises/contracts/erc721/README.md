@@ -1,6 +1,6 @@
 # ERC721 contract
 
-This contract imports openzeppelin libraries downlaoded locally and stored in `/lib` directory.
+This contract imports openzeppelin libraries downlaoded locally and stored in `/openzeppelin` directory.
 
 Once more some additional features are to be added.
 
