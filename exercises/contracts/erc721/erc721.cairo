@@ -31,8 +31,7 @@ func og_owner(tokenId: Uint256) -> (owner: felt) {
 
 // move me
 
-@view
-func get_counter{
+func _get_counter{
     syscall_ptr: felt*,
     pedersen_ptr: HashBuiltin*,
     range_check_ptr,
@@ -42,12 +41,17 @@ func get_counter{
     return (res);
 }
 
-@view 
-func ERC721.getCounter(contract_address :felt) -> (res: felt) {
-    let (counter) = get_counter();
-    return (counter, );
+@view
+func getCounter{
+    syscall_ptr: felt*,
+    pedersen_ptr: HashBuiltin*,
+    range_check_ptr,
+}() -> (idx: Uint256) {
+    let (counter_felt) = _get_counter();
+    // let counter_u256 = cast((counter_felt, 0), Uint256); 
+    let counter_u256 = Uint256(counter_felt, 0); 
+    return (counter_u256, );
 }
-
 
 // move me
 func _get_new_counter{
@@ -73,6 +77,7 @@ func getOriginalOwner{
     let (result) = og_owner.read(token_id);
     return (result, );
 }
+
 
 func _set_original_owner{
     syscall_ptr: felt*,
