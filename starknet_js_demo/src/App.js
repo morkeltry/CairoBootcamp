@@ -16,7 +16,7 @@ abi.erc721 = erc721ContractAbi;
 const contractAddress = {};
 contractAddress.old = "0x0704ed6b41f5d9dfdc5037c627d53ee52aef0675ed47ba59b57b8152c0144a9e";
 contractAddress.storage = "0x016b9096eb5a4c9bf94463db3796163b7d081db55ea635cc061ef331e5bfded6";
-
+contractAddress.erc721 = "0x021ccad05bca56598550ad3f168127e8a84561f077a4cffdc500457137c8304c";
 
 function App() {
   const [provider, setProvider] = useState('')
