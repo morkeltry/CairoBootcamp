@@ -5,15 +5,26 @@ import { Contract } from "starknet"
 import { toBN } from "starknet/dist/utils/number"
 
 import contractAbi from "./contract_abi.json"
+import storageContractAbi from "./storage_abi.json"
+import erc721ContractAbi from "./MahERC721_abi.json"
 
-const contractAddress = "0x0704ed6b41f5d9dfdc5037c627d53ee52aef0675ed47ba59b57b8152c0144a9e"
+const abi = {};
+abi.old = contractAbi;
+abi.storage = storageContractAbi;
+abi.erc721 = erc721ContractAbi;
+
+const contractAddress = {};
+contractAddress.old = "0x0704ed6b41f5d9dfdc5037c627d53ee52aef0675ed47ba59b57b8152c0144a9e";
+contractAddress.storage = "0x016b9096eb5a4c9bf94463db3796163b7d081db55ea635cc061ef331e5bfded6";
 
 
 function App() {
   const [provider, setProvider] = useState('')
   const [address, setAddress] = useState('')
   const [retrievedBalance, setRetrievedBalance] = useState('')
+  const [retrievedStorageBalance, setRetrievedStorageBalance] = useState('')
   const [isConnected, setIsConnected] = useState(false)
+  const [input, setInput] = useState(0)
 
 
   const connectWallet = async() => {
@@ -34,10 +45,10 @@ function App() {
     }
   }
 
-  const increaseBalanceFunction = async() => {
+  const increaseBalanceFunction = async(which='old') => {
     try{
       // create a contract object based on the provider, address and abi
-      const contract = new Contract(contractAbi, contractAddress, provider)
+      const contract = new Contract(abi[which], contractAddress[which], provider)
       
       // call the increase_balance function
       await contract.increase_balance(13)
@@ -48,16 +59,35 @@ function App() {
     }
   }
 
-  const getBalanceFunction = async() => {
+
+  const setBalanceFunction = async(newBalance=1337, which='storage') => {
     try{
       // create a contract object based on the provider, address and abi
-      const contract = new Contract(contractAbi, contractAddress, provider)
+      const contract = new Contract(abi[which], contractAddress[which], provider)
+      
+      // call the set_balance function
+      await contract.set_balance(newBalance)
+      
+    }
+    catch(error){
+      alert(error.message)
+    }
+  }
+
+  const getBalanceFunction = async(which='old') => {
+    try{
+      // create a contract object based on the provider, address and abi
+      const contract = new Contract(abi[which], contractAddress[which], provider)
       // call the function
       const _bal = await contract.get_balance()
       // decode the result
       const _decodedBalance = toBN(_bal.res, 16).toString()
       // display the result
-      setRetrievedBalance(_decodedBalance)
+      switch (which) {
+        case 'storage' : { setRetrievedStorageBalance(_decodedBalance) }
+        case 'old' : { setRetrievedBalance(_decodedBalance) }
+      }
+      
     }
     catch(error){
       alert(error.message)
@@ -99,6 +129,20 @@ function App() {
                 <input type="submit" className="button" value="Get Balance " onClick={() => getBalanceFunction()} />
               </div>
               <p>Balance: {retrievedBalance} ETH</p>
+              <hr />
+
+              <div className="cardForm">
+               
+                <input type="submit" className="button" value="Get Balance (Storage Contract) " onClick={() => getBalanceFunction('storage')} />
+              </div>
+              <p>Balance: {retrievedStorageBalance} ETH</p>
+              <hr />
+
+              <div>
+                {/* <input type="textbox"  defaultValue="1337" onClick={(e) => setInput(e.value)} /> */}
+                <input type="submit" className="button" value="Make It Rain " onClick={() => setBalanceFunction()} />
+              </div>
+              
             </div>
           </div>
         </main>

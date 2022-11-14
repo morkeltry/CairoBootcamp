@@ -3,3 +3,11 @@ protostar_version = "0.6.0"
 
 ["protostar.project"]
 libs_path = "."
+
+["protostar.contracts"]
+MahERC721 = [
+    "./exercises/contracts/erc721/erc721.cairo",
+]
+storage = [
+    "./exercises/contracts/storage/storage.cairo",
+]

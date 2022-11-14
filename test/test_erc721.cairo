@@ -47,6 +47,7 @@ func test_mint{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
 
     // Check the counter increases afte two mints
     let (current_counter) = IERC721.getCounter(contract_address=contract_address);
+
     assert current_counter.low = 2;
 
     return ();

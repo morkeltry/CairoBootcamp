@@ -41,9 +41,9 @@ func get_owner{
     syscall_ptr: felt*,
     pedersen_ptr: HashBuiltin*,
     range_check_ptr,
-}() -> (res: felt) {
-    let res = Ownable.owner();
-    return  res;
+}() -> (owner: felt) {
+    let (res) = Ownable.owner();
+    return  (res, );
 }
 
 // Returns the current balance.
