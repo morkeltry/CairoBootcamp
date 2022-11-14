@@ -1,2 +1,3 @@
-node_modules/
 package-lock.json
+starknet_js_demo/package-lock.json
+node_modules/
