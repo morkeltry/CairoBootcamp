@@ -49,8 +49,9 @@ struct Winner {
 func consortium_idx() -> (idx: felt) {
 }
 
+// Not the plural of consortium. It was hard enough for me to accept verbs ending in -ize, and now this :(
 @storage_var
-func consortiums(consortium_idx: felt) -> (consortium: Consortium) {
+func consortia(consortium_idx: felt) -> (consortium: Consortium) {
 }
 
 @storage_var
@@ -96,7 +97,17 @@ func answered(consortium_idx: felt, proposal_idx: felt, member_addr: felt) -> (t
 
 @external
 func create_consortium{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
-    
+    alloc_locals;
+    let (consortia_were) = consortium_idx.read();
+    let new_consortia_idx = consortia_were+1;
+    let (caller) = get_caller_address();
+
+    let newCons = Consortium(chairperson=caller, proposal_count=0 );
+
+    consortia.write(new_consortia_idx, newCons);
+    add_member(new_consortia_idx, caller, prop=TRUE, ans=TRUE, votes=100);
+
+    consortium_idx.write(new_consortia_idx);
     return ();
 }
 
@@ -112,7 +123,15 @@ func add_proposal{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_pt
     type: felt,
     deadline: felt,
 ) {
+    // checks
+        
 
+    let new_prop= Proposal (
+    type=type,
+    win_idx = -1,  // index of winning option
+    ans_idx = 0,
+    deadline=deadline,
+    over = FALSE);
     return ();
 }
 
@@ -121,6 +140,11 @@ func add_member{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}
     consortium_idx: felt, member_addr: felt, prop: felt, ans: felt, votes: felt
 ) {
 
+    let (caller) = get_caller_address();
+    // check consortium_idx is chair
+
+    let new_member = Member(votes=votes, prop=prop, ans=ans);
+    members.write(consortium_idx, member_addr, new_member);
     return ();
 }
 
@@ -129,6 +153,8 @@ func add_answer{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}
     consortium_idx: felt, proposal_idx: felt, string_len: felt, string: felt*
 ) {
 
+    let (caller) = get_caller_address();
+
     return ();
 }
 
@@ -136,6 +162,7 @@ func add_answer{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}
 func vote_answer{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     consortium_idx: felt, proposal_idx: felt, answer_idx: felt
 ) {
+    let (caller) = get_caller_address();
 
     return ();
 }
@@ -144,6 +171,11 @@ func vote_answer{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
 func tally{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     consortium_idx: felt, proposal_idx: felt
 ) -> (win_idx: felt) {
+    let (caller) = get_caller_address();
+    let (consortium) = consortia.read(consortium_idx);
+    assert consortium.chairperson = caller;
+
+    let winner_idx = 999;
 
     return (winner_idx,);
 }

@@ -9,7 +9,7 @@ from exercises.contracts.consortium.consortium import (
     proposals_answers,
     consortium_idx,
     Consortium,
-    consortiums,
+    consortia,
     create_consortium,
     proposals_title,
     add_proposal,
@@ -57,7 +57,7 @@ func test_create_consortium{
     assert 1 = con_idx;
 
     // Check that caller set as chairperson
-    let (con) = consortiums.read(0);
+    let (con) = consortia.read(0);
     assert Addr_1 = con.chairperson;
 
     // Check that Addr_1 added to members array
