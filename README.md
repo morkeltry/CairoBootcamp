@@ -1,4 +1,4 @@
-# some Cairo exercises from Extropy.io
+# Some Cairo exercises from Extropy.io
 
 ## Setup:
 
@@ -24,4 +24,4 @@ should give cairo-lang > v0.10.0. If not, then `pip3 install --upgrade cairo-lan
 **All tests should pass without any modification of the test files.**
 
 **Hence you must only modify the `.cairo` files in the `/exercises/` directory.**
- 
+
